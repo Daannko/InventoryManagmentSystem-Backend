@@ -1,6 +1,7 @@
 package com.example.SpringBase.configuration;
 
-import com.example.SpringBase.models.*;
+import com.example.SpringBase.models.Role;
+import com.example.SpringBase.models.User;
 import com.example.SpringBase.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -8,9 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-
-import static com.example.SpringBase.models.Role.ROLE_ADMIN;
-import static com.example.SpringBase.models.Role.ROLE_USER;
 
 @Component
 @RequiredArgsConstructor
@@ -38,8 +36,8 @@ public class DatabaseLoader implements CommandLineRunner {
     @Override
     public void run(String... strings){
 
-        User user1 = addUser("user1@db.com", "user", ROLE_USER, "First", "User");
-        User user2 = addUser("user2@db.com", "user", ROLE_USER, "Second", "User");
-        User admin = addUser("admin@db.com", "admin", ROLE_ADMIN, "First", "Admin");
+//        User user1 = addUser("Coolluser@db.com", "user", ROLE_USER, "First", "User");
+//        User user2 = addUser("user2@db.com", "user", ROLE_USER, "Second", "User");
+//        User admin = addUser("admin@db.com", "admin", ROLE_ADMIN, "First", "Admin");
     }
 }

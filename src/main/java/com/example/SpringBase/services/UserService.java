@@ -1,6 +1,5 @@
 package com.example.SpringBase.services;
 
-import com.example.SpringBase.dto.UserResponse;
 import com.example.SpringBase.models.User;
 import com.example.SpringBase.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -8,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +21,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public List<UserResponse> findAll(){
-        return null;
+    public List<User> findAll(){
+        return userRepository.findAll();
     }
 
     public User save(User user){
