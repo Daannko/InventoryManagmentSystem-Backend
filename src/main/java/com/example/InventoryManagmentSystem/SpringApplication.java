@@ -1,4 +1,4 @@
-package com.example.SpringBase;
+package com.example.InventoryManagmentSystem;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

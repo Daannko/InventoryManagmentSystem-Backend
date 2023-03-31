@@ -1,6 +1,6 @@
-package com.example.SpringBase;
+package com.example.InventoryManagmentSystem;
 
-import com.example.SpringBase.models.User;
+import com.example.InventoryManagmentSystem.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

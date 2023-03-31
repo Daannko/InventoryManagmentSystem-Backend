@@ -1,4 +1,4 @@
-package com.example.SpringBase.models;
+package com.example.InventoryManagmentSystem.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

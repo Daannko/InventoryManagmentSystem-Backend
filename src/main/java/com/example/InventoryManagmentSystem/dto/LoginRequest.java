@@ -1,4 +1,4 @@
-package com.example.SpringBase.dto;
+package com.example.InventoryManagmentSystem.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

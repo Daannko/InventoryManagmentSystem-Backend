@@ -1,8 +1,8 @@
-package com.example.SpringBase.configuration;
+package com.example.InventoryManagmentSystem.configuration;
 
-import com.example.SpringBase.models.Role;
-import com.example.SpringBase.models.User;
-import com.example.SpringBase.repositories.UserRepository;
+import com.example.InventoryManagmentSystem.models.Role;
+import com.example.InventoryManagmentSystem.models.User;
+import com.example.InventoryManagmentSystem.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;

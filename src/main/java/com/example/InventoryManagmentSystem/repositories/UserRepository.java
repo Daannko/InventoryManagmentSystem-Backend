@@ -1,6 +1,6 @@
-package com.example.SpringBase.repositories;
+package com.example.InventoryManagmentSystem.repositories;
 
-import com.example.SpringBase.models.User;
+import com.example.InventoryManagmentSystem.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

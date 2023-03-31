@@ -1,6 +1,6 @@
-package com.example.SpringBase.dto;
+package com.example.InventoryManagmentSystem.dto;
 
-import com.example.SpringBase.models.Role;
+import com.example.InventoryManagmentSystem.models.Role;
 import lombok.Data;
 
 import java.util.List;

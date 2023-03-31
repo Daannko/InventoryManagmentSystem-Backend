@@ -1,7 +1,7 @@
-package com.example.SpringBase.controlers;
+package com.example.InventoryManagmentSystem.controlers;
 
-import com.example.SpringBase.models.User;
-import com.example.SpringBase.services.UserService;
+import com.example.InventoryManagmentSystem.models.User;
+import com.example.InventoryManagmentSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

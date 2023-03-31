@@ -1,7 +1,7 @@
-package com.example.SpringBase.configuration;
+package com.example.InventoryManagmentSystem.configuration;
 
-import com.example.SpringBase.filter.JwtFilter;
-import com.example.SpringBase.services.MyUserDetailsService;
+import com.example.InventoryManagmentSystem.filter.JwtFilter;
+import com.example.InventoryManagmentSystem.services.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

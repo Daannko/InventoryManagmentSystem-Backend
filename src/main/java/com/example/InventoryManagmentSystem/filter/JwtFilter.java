@@ -1,7 +1,7 @@
-package com.example.SpringBase.filter;
+package com.example.InventoryManagmentSystem.filter;
 
-import com.example.SpringBase.JwtUtil;
-import com.example.SpringBase.services.MyUserDetailsService;
+import com.example.InventoryManagmentSystem.JwtUtil;
+import com.example.InventoryManagmentSystem.services.MyUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

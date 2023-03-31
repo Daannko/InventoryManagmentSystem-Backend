@@ -1,4 +1,4 @@
-package com.example.SpringBase.controlers;
+package com.example.InventoryManagmentSystem.controlers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

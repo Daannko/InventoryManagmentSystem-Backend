@@ -1,7 +1,7 @@
-package com.example.SpringBase.services;
+package com.example.InventoryManagmentSystem.services;
 
-import com.example.SpringBase.models.User;
-import com.example.SpringBase.repositories.UserRepository;
+import com.example.InventoryManagmentSystem.models.User;
+import com.example.InventoryManagmentSystem.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
