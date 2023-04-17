@@ -3,6 +3,7 @@ package com.example.InventoryManagmentSystem.models;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -13,19 +14,12 @@ public class Storehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column
     private String name;
-    @Column
     private String description;
-
-    @ElementCollection
-    @CollectionTable(name = "")
-    private Map<Integer,Integer> inventory;
-    @Column
     private Long localizationId;
-    @Column
+    @ManyToMany(mappedBy = "managedStorehouses")
+    List<User> owners;
     private String category;
-    @Column
     private boolean isBig;
 
 }

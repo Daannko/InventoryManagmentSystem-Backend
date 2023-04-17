@@ -1,6 +1,7 @@
 package com.example.InventoryManagmentSystem.models;
 
 import lombok.Data;
+import org.aspectj.weaver.ast.Or;
 
 import javax.persistence.*;
 
@@ -9,21 +10,12 @@ import javax.persistence.*;
 @Table(name = "items")
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
     private Long id;
-    @Column
-    private String name;
-    @Column
-    private String description;
-    @Column
-    private double price;
-    @Column
-    private String category;
-    @Column
-    private boolean isAvailable;
-    @Column
-    private String manufacturer;
-
-
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+    private Long productId;
+    private Long quantity;
 
 }

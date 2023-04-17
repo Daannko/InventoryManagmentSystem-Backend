@@ -33,5 +33,12 @@ public class User {
 
     private String surname;
 
+    @ManyToMany
+    @JoinTable(
+            name = "managed_storehouses",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "storehouse_id"))
+    List<Storehouse> managedStorehouses;
+
     private boolean verified;
 }
