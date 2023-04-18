@@ -23,7 +23,4 @@ public class Product {
     private Long categoryId;
     private boolean isAvailable;
     private String manufacturer;
-
-
-
 }
