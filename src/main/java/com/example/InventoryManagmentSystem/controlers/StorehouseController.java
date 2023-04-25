@@ -1,10 +1,9 @@
 package com.example.InventoryManagmentSystem.controlers;
-import com.example.InventoryManagmentSystem.models.Product;
+import com.example.InventoryManagmentSystem.dto.AddOwnerToStorehouseRequest;
 import com.example.InventoryManagmentSystem.models.Storehouse;
-import com.example.InventoryManagmentSystem.services.ProductService;
 import com.example.InventoryManagmentSystem.services.StorehouseService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.Store;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +21,12 @@ public class StorehouseController {
     }
 
     @PostMapping("/add")
-    public Storehouse add(@RequestBody Storehouse storehouse){
-        return storehouseService.addProduct(storehouse);
+    public Storehouse add(@RequestBody Storehouse request){
+        return storehouseService.addStorehouse(request);
+    }
+    @PostMapping("/user")
+    public ResponseEntity <?> add(@RequestBody AddOwnerToStorehouseRequest request){
+        return ResponseEntity.ok(storehouseService.addOwnerToStorehouse(request));
     }
 
 }

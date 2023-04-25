@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
+import static com.example.InventoryManagmentSystem.models.Role.ROLE_ADMIN;
 import static com.example.InventoryManagmentSystem.models.Role.ROLE_USER;
 
 @RequiredArgsConstructor
@@ -78,7 +79,26 @@ public class AuthController {
                             .name(registerRequest.getName())
                             .surname(registerRequest.getSurname())
                             .roles(Collections.singletonList(ROLE_USER))
-                            .verified(false)
+                            .verified(true)
+                            .build()
+            );
+
+            return ResponseEntity.ok(new MessageResponse("User created!"));
+        }
+    }
+    @PostMapping("/register/admin")
+    public ResponseEntity<?> registerAdmin(@RequestBody RegisterRequest registerRequest){
+        if(userService.existsByEmail(registerRequest.getEmail())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("User with that email already exists!"));
+        }else{
+            userService.save(
+                    User.builder()
+                            .email(registerRequest.getEmail())
+                            .password(passwordEncoder.encode(registerRequest.getPassword()))
+                            .name(registerRequest.getName())
+                            .surname(registerRequest.getSurname())
+                            .roles(Collections.singletonList(ROLE_ADMIN))
+                            .verified(true)
                             .build()
             );
 

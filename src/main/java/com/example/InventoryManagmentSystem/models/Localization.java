@@ -1,5 +1,7 @@
 package com.example.InventoryManagmentSystem.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,8 +12,9 @@ import javax.persistence.*;
 public class Localization {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private long id;
     private double lat,lng;
     @Column(nullable = false)
     private String name;
@@ -20,6 +23,9 @@ public class Localization {
     private String street;
     private String buildingNumber;
     private String country;
+    @OneToOne(mappedBy = "localization")
+    @JsonBackReference
+    private Storehouse storehouse;
 
 }
 

@@ -1,5 +1,8 @@
 package com.example.InventoryManagmentSystem.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,7 +36,7 @@ public class User {
 
     private String surname;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "managed_storehouses",
             joinColumns = @JoinColumn(name = "user_id"),

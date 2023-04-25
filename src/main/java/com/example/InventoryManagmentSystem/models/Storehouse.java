@@ -1,5 +1,8 @@
 package com.example.InventoryManagmentSystem.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,14 +15,18 @@ import java.util.Map;
 public class Storehouse {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
     private String name;
     private String description;
-    private Long localizationId;
-    @ManyToMany(mappedBy = "managedStorehouses")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "storehouse_id", referencedColumnName = "id")
+    @JsonManagedReference
+    private Localization localization;
+    @ManyToMany(mappedBy = "managedStorehouses",cascade = CascadeType.ALL)
+    @JsonIgnore
     List<User> owners;
-    private String category;
     private boolean isBig;
 
 }
