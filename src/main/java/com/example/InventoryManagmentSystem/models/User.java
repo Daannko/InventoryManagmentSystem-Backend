@@ -43,5 +43,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "storehouse_id"))
     List<Storehouse> managedStorehouses;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    @JsonManagedReference
+    private Company company;
+
     private boolean verified;
 }
