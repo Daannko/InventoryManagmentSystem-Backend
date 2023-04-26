@@ -2,14 +2,17 @@ package com.example.InventoryManagmentSystem.services;
 
 import com.example.InventoryManagmentSystem.dto.AddCompanyRequest;
 import com.example.InventoryManagmentSystem.dto.AddUserToCompanyRequest;
+import com.example.InventoryManagmentSystem.dto.CompanyResponse;
 import com.example.InventoryManagmentSystem.dto.MessageResponse;
 import com.example.InventoryManagmentSystem.models.Company;
 import com.example.InventoryManagmentSystem.models.User;
 import com.example.InventoryManagmentSystem.repositories.CompanyRepository;
 import com.example.InventoryManagmentSystem.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +46,21 @@ public class CompanyService {
         return new MessageResponse(user.getName() + " " + user.getSurname() + " was added as a employee to " + company.getName());
     }
 
-    public Company add(AddCompanyRequest request){
-        return companyRepository.save(new Company(request.getName(),request.getEmployees()));
+    public CompanyResponse add(AddCompanyRequest request) throws UsernameNotFoundException{
+
+        Optional<User> optionalUser = userRepository.findById(request.getOwner());
+        if(optionalUser.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        Company company = companyRepository.save(new Company(request.getName(), Collections.singletonList(optionalUser.get())));
+        CompanyResponse companyResponse = new CompanyResponse();
+        companyResponse.setId(company.getId());
+        companyResponse.setName(company.getName());
+        companyResponse.setEmployees(Collections.singletonList(optionalUser.get().getDto()));
+        companyResponse.setMessage("Company added!");
+
+        return companyResponse;
     }
 
     public Company getById(Long id){

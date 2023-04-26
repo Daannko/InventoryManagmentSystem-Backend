@@ -1,5 +1,6 @@
 package com.example.InventoryManagmentSystem.models;
 
+import com.example.InventoryManagmentSystem.dto.UserResponse;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -47,6 +48,17 @@ public class User {
     @JoinColumn(name = "company_id", nullable = false)
     @JsonManagedReference
     private Company company;
-
     private boolean verified;
+
+    public UserResponse getDto(){
+        return new UserResponse(
+                this.id,
+                this.email,
+                this.roles
+                ,this.name,
+                this.surname
+        );
+    }
+
+
 }

@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class AddCompanyRequest {
     private String name;
-    private List<User> employees;
+    private Long owner;
 }

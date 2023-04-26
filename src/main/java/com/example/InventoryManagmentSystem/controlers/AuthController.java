@@ -5,6 +5,7 @@ import com.example.InventoryManagmentSystem.dto.LoginRequest;
 import com.example.InventoryManagmentSystem.dto.LoginResponse;
 import com.example.InventoryManagmentSystem.dto.MessageResponse;
 import com.example.InventoryManagmentSystem.dto.RegisterRequest;
+import com.example.InventoryManagmentSystem.models.Company;
 import com.example.InventoryManagmentSystem.models.User;
 import com.example.InventoryManagmentSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -80,6 +81,7 @@ public class AuthController {
                             .surname(registerRequest.getSurname())
                             .roles(Collections.singletonList(ROLE_USER))
                             .verified(true)
+                            .company(null)
                             .build()
             );
 
@@ -99,6 +101,7 @@ public class AuthController {
                             .surname(registerRequest.getSurname())
                             .roles(Collections.singletonList(ROLE_ADMIN))
                             .verified(true)
+                            .company(new Company())
                             .build()
             );
 
