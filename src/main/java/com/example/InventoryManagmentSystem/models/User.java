@@ -1,8 +1,6 @@
 package com.example.InventoryManagmentSystem.models;
 
 import com.example.InventoryManagmentSystem.dto.UserResponse;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,13 +42,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "storehouse_id"))
     List<Storehouse> managedStorehouses;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id")
     @JsonManagedReference
     private Company company;
     private boolean verified;
 
-    public UserResponse getDto(){
+    public UserResponse dto(){
         return new UserResponse(
                 this.id,
                 this.email,

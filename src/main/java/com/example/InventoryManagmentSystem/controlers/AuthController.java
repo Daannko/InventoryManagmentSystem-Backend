@@ -7,6 +7,7 @@ import com.example.InventoryManagmentSystem.dto.MessageResponse;
 import com.example.InventoryManagmentSystem.dto.RegisterRequest;
 import com.example.InventoryManagmentSystem.models.Company;
 import com.example.InventoryManagmentSystem.models.User;
+import com.example.InventoryManagmentSystem.repositories.CompanyRepository;
 import com.example.InventoryManagmentSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static com.example.InventoryManagmentSystem.models.Role.ROLE_ADMIN;
@@ -31,6 +33,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
@@ -93,6 +96,7 @@ public class AuthController {
         if(userService.existsByEmail(registerRequest.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("User with that email already exists!"));
         }else{
+
             userService.save(
                     User.builder()
                             .email(registerRequest.getEmail())
@@ -101,7 +105,7 @@ public class AuthController {
                             .surname(registerRequest.getSurname())
                             .roles(Collections.singletonList(ROLE_ADMIN))
                             .verified(true)
-                            .company(new Company())
+                            .company(null)
                             .build()
             );
 

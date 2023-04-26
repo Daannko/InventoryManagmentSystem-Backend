@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +33,8 @@ public class CompanyService {
             return new MessageResponse("No User or Company found :(");
         }
 
-        if(companyOptional.get().getEmployees().stream().filter(e -> e.getId() == userOptional.get().getId()).toArray().length != 0){
-            return new MessageResponse("User is already an employee of a " + companyOptional.get().getName());
+        if(userOptional.get().getCompany() != null){
+            return new MessageResponse("User is already an employee of a company");
         }
 
         User user = userOptional.get();
@@ -52,13 +53,20 @@ public class CompanyService {
         if(optionalUser.isEmpty()){
             throw new UsernameNotFoundException("User not found");
         }
+        if(optionalUser.get().getCompany() != null){
+            return new CompanyResponse("User already in company");
+        }
 
-        Company company = companyRepository.save(new Company(request.getName(), Collections.singletonList(optionalUser.get())));
+        Company company = new Company(request.getName(), Collections.singletonList(optionalUser.get()));
         CompanyResponse companyResponse = new CompanyResponse();
         companyResponse.setId(company.getId());
         companyResponse.setName(company.getName());
-        companyResponse.setEmployees(Collections.singletonList(optionalUser.get().getDto()));
+        companyResponse.setEmployees(Collections.singletonList(optionalUser.get().dto()));
         companyResponse.setMessage("Company added!");
+
+        User user = optionalUser.get();
+        user.setCompany(company);
+        userRepository.save(user);
 
         return companyResponse;
     }
@@ -67,8 +75,8 @@ public class CompanyService {
         return companyRepository.getById(id);
     }
 
-    public List<Company> getAll(){
-        return companyRepository.findAll();
+    public List<CompanyResponse> getAll(){
+        return companyRepository.findAll().stream().map(Company::dto).collect(Collectors.toList());
     }
 
 }

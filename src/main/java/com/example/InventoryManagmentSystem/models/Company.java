@@ -1,11 +1,12 @@
 package com.example.InventoryManagmentSystem.models;
 
+import com.example.InventoryManagmentSystem.dto.CompanyResponse;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -14,9 +15,8 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Column(nullable = false)
     private String name;
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
     @JsonBackReference
     private List<User> employees;
 
@@ -25,7 +25,14 @@ public class Company {
         this.employees = employees;
     }
 
-    public Company() {
+    public Company() {}
 
+    public CompanyResponse dto(){
+        return new CompanyResponse(
+                this.id,
+                this.name,
+                this.employees.stream().map(User::dto).collect(Collectors.toList()),
+                "All companies"
+        );
     }
 }
