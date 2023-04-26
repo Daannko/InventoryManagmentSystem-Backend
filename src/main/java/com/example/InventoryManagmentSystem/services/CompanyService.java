@@ -42,7 +42,6 @@ public class CompanyService {
         company.getEmployees().add(user);
         user.setCompany(company);
         userRepository.save(user);
-        companyRepository.save(company);
 
         return new MessageResponse(user.getName() + " " + user.getSurname() + " was added as a employee to " + company.getName());
     }
@@ -58,15 +57,18 @@ public class CompanyService {
         }
 
         Company company = new Company(request.getName(), Collections.singletonList(optionalUser.get()));
-        CompanyResponse companyResponse = new CompanyResponse();
-        companyResponse.setId(company.getId());
-        companyResponse.setName(company.getName());
-        companyResponse.setEmployees(Collections.singletonList(optionalUser.get().dto()));
-        companyResponse.setMessage("Company added!");
 
         User user = optionalUser.get();
         user.setCompany(company);
         userRepository.save(user);
+
+        CompanyResponse companyResponse = new CompanyResponse();
+        companyResponse.setId(user.getCompany().getId());
+        companyResponse.setName(company.getName());
+        companyResponse.setEmployees(Collections.singletonList(optionalUser.get().dto()));
+        companyResponse.setMessage("Company added!");
+
+
 
         return companyResponse;
     }
