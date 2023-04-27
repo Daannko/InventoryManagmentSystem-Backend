@@ -1,9 +1,11 @@
 package com.example.InventoryManagmentSystem.models;
 
+import com.example.InventoryManagmentSystem.dto.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -23,4 +25,13 @@ public class Product {
     private Long categoryId;
     private boolean isAvailable;
     private String manufacturer;
+    public ProductDto dto(){
+        return new ProductDto(
+                this.name,
+                this.description,
+                this.price,
+                this.categoryId,
+                this.manufacturer);
+    }
+
 }

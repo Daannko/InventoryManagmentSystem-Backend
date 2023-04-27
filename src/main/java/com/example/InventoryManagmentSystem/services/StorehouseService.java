@@ -2,17 +2,21 @@ package com.example.InventoryManagmentSystem.services;
 
 import com.example.InventoryManagmentSystem.dto.AddOwnerToStorehouseRequest;
 import com.example.InventoryManagmentSystem.dto.MessageResponse;
+import com.example.InventoryManagmentSystem.dto.ProductResponse;
+import com.example.InventoryManagmentSystem.models.Product;
+import com.example.InventoryManagmentSystem.models.Quantity;
 import com.example.InventoryManagmentSystem.models.Storehouse;
 import com.example.InventoryManagmentSystem.models.User;
+import com.example.InventoryManagmentSystem.repositories.ProductRepository;
+import com.example.InventoryManagmentSystem.repositories.QuantityRepository;
 import com.example.InventoryManagmentSystem.repositories.StorehouseRepository;
 import com.example.InventoryManagmentSystem.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.apache.catalina.Store;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +24,8 @@ public class StorehouseService {
 
     private final StorehouseRepository storehouseRepository;
     private final UserRepository userRepository;
+    private final QuantityRepository quantityRepository;
+    private final ProductRepository productRepository;
 
     public List<Storehouse> getAllStorehouses(){
         return storehouseRepository.findAll();
@@ -50,6 +56,25 @@ public class StorehouseService {
         userRepository.save(user);
 
         return new MessageResponse("Adding user succeeded");
+    }
+    public List<ProductResponse> getStorehouseInventory(Long id){
+
+        Optional<Storehouse> optionalStorehouse = storehouseRepository.findById(id);
+        if(optionalStorehouse.isEmpty()){
+            return Collections.singletonList(ProductResponse.builder().message("No storage found").build());
+        }
+        if(quantityRepository.findAllByStorehouseId(id).isEmpty()){
+            return Collections.singletonList(ProductResponse.builder().message("No items found").build());
+        }
+        List<ProductResponse> list = new ArrayList<>();
+        for(Quantity q : quantityRepository.findAllByStorehouseId(id).get()){
+            ProductResponse productResponse = new ProductResponse();
+            productResponse.setProduct(productRepository.getById(q.getProductId()).dto());
+            productResponse.setQuantity(q.getQuantity());
+            productResponse.setMessage("");
+            list.add(productResponse);
+        }
+        return list;
 
     }
 
