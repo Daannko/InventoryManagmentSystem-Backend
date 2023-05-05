@@ -39,7 +39,8 @@ public class OrderService {
             return OrderResponse.builder().message("This storehouse don't sell things (Debug this is not a big storehouse :( )").build();
         }
 
-        if(!userService.getContextUser().getManagedStorehouses().contains(toStorehouseOptional.get())) {
+
+        if(userOptional.get().getManagedStorehouses().contains(toStorehouseOptional.get())) {
             return OrderResponse.builder().message("You cant put an order on storehouse you dont manage").build();
         }
 
@@ -68,7 +69,9 @@ public class OrderService {
         }
 
         Order order = optionalOrder.get();
-        User user = userService.getContextUser();
+
+
+        User user = userRepository.getById(orderProcessRequest.getUserId());
         if (user.getManagedStorehouses().stream().noneMatch(e -> e.getId().equals(order.getFromStorehouseId()))) {
             return new MessageResponse("You cant manage that store");
         }

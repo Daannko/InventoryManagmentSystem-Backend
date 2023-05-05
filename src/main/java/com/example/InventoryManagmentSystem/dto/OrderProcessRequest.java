@@ -8,6 +8,7 @@ import lombok.Data;
 public class OrderProcessRequest {
 
     private Long orderId;
+    private Long userId;
     private OrderStatus orderStatus;
 
 }
