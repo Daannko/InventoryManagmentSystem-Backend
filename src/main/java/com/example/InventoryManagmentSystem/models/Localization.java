@@ -13,7 +13,7 @@ public class Localization {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
     private double lat,lng;
     @Column(nullable = false)

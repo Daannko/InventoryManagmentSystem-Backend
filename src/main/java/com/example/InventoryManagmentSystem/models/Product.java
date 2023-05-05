@@ -17,7 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
     private String description;
@@ -27,6 +27,7 @@ public class Product {
     private String manufacturer;
     public ProductDto dto(){
         return new ProductDto(
+                this.id,
                 this.name,
                 this.description,
                 this.price,
