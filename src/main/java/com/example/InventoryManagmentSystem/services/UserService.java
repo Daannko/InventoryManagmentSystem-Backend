@@ -1,13 +1,20 @@
 package com.example.InventoryManagmentSystem.services;
 
+import com.example.InventoryManagmentSystem.dto.MessageResponse;
+import com.example.InventoryManagmentSystem.dto.UserDeleteFromCompanyRequest;
+import com.example.InventoryManagmentSystem.dto.UserDeleteFromStorehouseRequest;
+import com.example.InventoryManagmentSystem.dto.UserUpdateRequest;
+import com.example.InventoryManagmentSystem.models.Role;
 import com.example.InventoryManagmentSystem.models.User;
 import com.example.InventoryManagmentSystem.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public Optional<User> findById(Long id){
@@ -60,14 +68,42 @@ public class UserService {
         return null;
     }
 
-    public User getContextUser() throws UsernameNotFoundException {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final org.springframework.security.core.userdetails.User springUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        final Optional<User> userOptional = userRepository.findByEmail(springUser.getUsername());
-
-        userOptional.orElseThrow(() -> {
-            throw new UsernameNotFoundException("Not found " + springUser.getUsername());
-        });
-        return userOptional.get();
+    public User getUserFromContext(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return userRepository.findByEmail(username).orElseThrow( () -> new UsernameNotFoundException("User not found"));
     }
+
+    public MessageResponse updateUser(UserUpdateRequest request){
+
+        User user = getUserFromContext();
+
+        if(!passwordsMatch(request.getConfirmPassword(),user.getPassword())){
+            return new MessageResponse("The confirmation password is incorrect");
+        }
+
+        if(request.getSurname() != null)
+            user.setSurname(request.getSurname());
+        if(request.getEmail() != null)
+            user.setEmail(request.getEmail());
+        if(request.getPassword() != null)
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if(request.getFirstname() != null)
+            user.setName(request.getFirstname());
+
+
+        userRepository.save(user);
+        return new MessageResponse("Information changed correctly");
+
+    }
+
+    public boolean passwordsMatch(String confirmationPassword,String usersPassword){
+        return passwordEncoder.matches(confirmationPassword,usersPassword);
+    }
+
 }

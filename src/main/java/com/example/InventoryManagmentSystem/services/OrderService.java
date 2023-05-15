@@ -30,25 +30,30 @@ public class OrderService {
     public OrderResponse add(OrderRequest orderRequest) {
         Optional<Storehouse> fromStorehouseOptional = storehouseRepository.findById(orderRequest.getFormStorehouseId());
         Optional<Storehouse> toStorehouseOptional = storehouseRepository.findById(orderRequest.getToStorehouseId());
-        Optional<User> userOptional = userRepository.findById(orderRequest.getUserId());
+        User user =  userService.getUserFromContext();
 
-        if (fromStorehouseOptional.isEmpty() || toStorehouseOptional.isEmpty() || userOptional.isEmpty()) {
+        if(orderRequest.getToStorehouseId().equals(orderRequest.getFormStorehouseId())){
+            return OrderResponse.builder().message("Can't order from and to the same storehouse").build();
+        }
+
+        if (fromStorehouseOptional.isEmpty() || toStorehouseOptional.isEmpty()) {
             return OrderResponse.builder().message("Can't find user or storehouses").build();
         }
+
+        if(!user.getManagedStorehouses().stream().map(Storehouse::getId).collect(Collectors.toList()).contains(toStorehouseOptional.get().getId())) {
+            return OrderResponse.builder().message("You cant put an order on storehouse you dont manage").build();
+        }
+
         if (!fromStorehouseOptional.get().isBig()) {
             return OrderResponse.builder().message("This storehouse don't sell things (Debug this is not a big storehouse :( )").build();
         }
 
 
-        if(userOptional.get().getManagedStorehouses().contains(toStorehouseOptional.get())) {
-            return OrderResponse.builder().message("You cant put an order on storehouse you dont manage").build();
-        }
-
         Order order = Order.builder()
                 .orderStatus(OrderStatus.AWAIT)
                 .fromStorehouseId(orderRequest.getFormStorehouseId())
                 .toStorehouseId(orderRequest.getToStorehouseId())
-                .userId(orderRequest.getUserId())
+                .userId(user.getId())
                 .build();
 
         for (Item i: orderRequest.getItems())
@@ -71,9 +76,24 @@ public class OrderService {
         Order order = optionalOrder.get();
 
 
-        User user = userRepository.getById(orderProcessRequest.getUserId());
-        if (user.getManagedStorehouses().stream().noneMatch(e -> e.getId().equals(order.getFromStorehouseId()))) {
+
+
+        User user = userService.getUserFromContext();
+
+
+        if (!(user.getManagedStorehouses().stream().map(Storehouse::getId).collect(Collectors.toList()).contains(order.getToStorehouseId())
+         || user.getManagedStorehouses().stream().map(Storehouse::getId).collect(Collectors.toList()).contains(order.getFromStorehouseId()))) {
             return new MessageResponse("You cant manage that store");
+        }
+
+        if(orderProcessRequest.getOrderStatus().equals(OrderStatus.DELIVERED)){
+            if(user.getManagedStorehouses().stream().noneMatch(e -> e.getId().equals(order.getToStorehouseId())))
+                return new MessageResponse("You have to manage the store products are send to, to change order status on DELIVERED");
+        }
+        else
+        {
+            if(user.getManagedStorehouses().stream().noneMatch(e -> e.getId().equals(order.getFromStorehouseId())))
+                return new MessageResponse("You have to manage the store products are send from, to change order status on " + orderProcessRequest.getOrderStatus().toString());
         }
 
         if(order.getOrderStatus().equals(orderProcessRequest.getOrderStatus())){
@@ -164,9 +184,7 @@ public class OrderService {
     }
 
     public OrderForUserResponse getForUser(OrderForUserRequest request){
-
-
-        User user = userRepository.getById(request.getUserId());
+        User user = userService.getUserFromContext();
 
         OrderForUserResponse response = new OrderForUserResponse();
         response.setOrderedToYourStorehouses(new ArrayList<>());

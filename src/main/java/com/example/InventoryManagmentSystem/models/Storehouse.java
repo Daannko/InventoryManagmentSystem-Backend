@@ -27,6 +27,11 @@ public class Storehouse {
     @ManyToMany(mappedBy = "managedStorehouses",cascade = CascadeType.ALL)
     @JsonIgnore
     List<User> owners;
+
+    @ManyToMany(mappedBy = "storehouses",cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Company> companies;
+
     private boolean isBig;
 
 }

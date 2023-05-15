@@ -1,6 +1,11 @@
 package com.example.InventoryManagmentSystem.controlers;
 
+import com.example.InventoryManagmentSystem.dto.UserDeleteFromCompanyRequest;
+import com.example.InventoryManagmentSystem.dto.UserDeleteFromStorehouseRequest;
+import com.example.InventoryManagmentSystem.dto.UserUpdateRequest;
+import com.example.InventoryManagmentSystem.models.Storehouse;
 import com.example.InventoryManagmentSystem.models.User;
+import com.example.InventoryManagmentSystem.services.StorehouseService;
 import com.example.InventoryManagmentSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -17,6 +23,7 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final StorehouseService storehouseService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
@@ -37,12 +44,6 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/update")
-    ResponseEntity<?> updateUser(@RequestBody User user){
-        return ResponseEntity.ok(userService.save(user));
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     ResponseEntity<?> deleteUser(@PathVariable Long id){
         userService.deleteById(id);
@@ -57,4 +58,19 @@ public class UserController {
             return ResponseEntity.ok(user);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
     }
+    @GetMapping("/me")
+    public User getuserFromContext(){
+        return userService.getUserFromContext();
+    }
+
+    @GetMapping("/storehouses")
+    public List<Storehouse> getMyStorehouses(){
+        return storehouseService.getMyStorehouses();
+    }
+
+    @PatchMapping("/update")
+    ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest request){
+        return ResponseEntity.ok(userService.updateUser(request));
+    }
+
 }

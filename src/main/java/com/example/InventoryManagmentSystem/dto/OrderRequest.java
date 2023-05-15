@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class OrderRequest {
-    private Long userId;
     private Long formStorehouseId;
     private Long toStorehouseId;
     private List<Item> items;

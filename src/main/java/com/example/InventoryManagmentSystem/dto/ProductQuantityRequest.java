@@ -10,5 +10,6 @@ public class ProductQuantityRequest {
     private Long storehouseId;
     private Long productId;
     private int quantity;
+    private Boolean blocked;
 
 }

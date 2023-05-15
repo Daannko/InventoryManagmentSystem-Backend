@@ -3,20 +3,13 @@ package com.example.InventoryManagmentSystem.services;
 import com.example.InventoryManagmentSystem.dto.AddOwnerToStorehouseRequest;
 import com.example.InventoryManagmentSystem.dto.MessageResponse;
 import com.example.InventoryManagmentSystem.dto.ProductResponse;
-import com.example.InventoryManagmentSystem.models.Product;
-import com.example.InventoryManagmentSystem.models.Quantity;
-import com.example.InventoryManagmentSystem.models.Storehouse;
-import com.example.InventoryManagmentSystem.models.User;
-import com.example.InventoryManagmentSystem.repositories.ProductRepository;
-import com.example.InventoryManagmentSystem.repositories.QuantityRepository;
-import com.example.InventoryManagmentSystem.repositories.StorehouseRepository;
-import com.example.InventoryManagmentSystem.repositories.UserRepository;
+import com.example.InventoryManagmentSystem.dto.UserDeleteFromStorehouseRequest;
+import com.example.InventoryManagmentSystem.models.*;
+import com.example.InventoryManagmentSystem.repositories.*;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.Store;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +19,8 @@ public class StorehouseService {
     private final UserRepository userRepository;
     private final QuantityRepository quantityRepository;
     private final ProductRepository productRepository;
+    private final CompanyRepository companyRepository;
+    private final UserService userService;
 
     public List<Storehouse> getAllStorehouses(){
         return storehouseRepository.findAll();
@@ -37,6 +32,7 @@ public class StorehouseService {
 
     public MessageResponse addOwnerToStorehouse(AddOwnerToStorehouseRequest request){
 
+        User requestUser = userService.getUserFromContext();
         Optional<Storehouse> optionalStorehouse = storehouseRepository.findById(request.getStorehouseId());
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
         if(optionalStorehouse.isEmpty() || optionalUser.isEmpty()){
@@ -46,12 +42,44 @@ public class StorehouseService {
         User user = optionalUser.get();
         Storehouse storehouse = optionalStorehouse.get();
 
+        if(!requestUser.getRoles().contains(Role.ROLE_ADMIN)){
+            if(storehouse.getCompanies().stream().filter(e -> Objects.equals(e.getId(), requestUser.getCompany().getId())).toArray().length == 0) {
+                return new MessageResponse("Your company dont manage this storehouse");
+            }
+            if(!requestUser.getCompany().getAdmins().contains(requestUser.getEmail())){
+                return new MessageResponse("You dont have a role to do that");
+            }
+        }
+
         if(user.getManagedStorehouses().stream().filter(e -> Objects.equals(e.getId(), storehouse.getId())).toArray().length != 0){
             return new MessageResponse("User already manages the shop");
         }
 
         storehouse.getOwners().add(user);
         user.getManagedStorehouses().add(storehouse);
+
+        Company company = requestUser.getCompany();
+
+        List<Company> companies = storehouse.getCompanies();
+        if(companies == null){
+            companies = Collections.singletonList(company);
+        }
+        else{
+            companies.add(company);
+        }
+
+        List<Storehouse> storehouses = company.getStorehouses();
+        if(storehouses == null){
+            storehouses = Collections.singletonList(storehouse);
+        }
+        else{
+            storehouses.add(storehouse);
+        }
+
+        storehouse.setCompanies(companies);
+        company.setStorehouses(storehouses);
+
+        companyRepository.save(company);
         storehouseRepository.save(storehouse);
         userRepository.save(user);
 
@@ -75,7 +103,32 @@ public class StorehouseService {
             list.add(productResponse);
         }
         return list;
+    }
 
+    public MessageResponse deleteUserFromStorehouse(UserDeleteFromStorehouseRequest request){
+        User requestUser = userService.getUserFromContext();
+        if(request.getUserEmail().equals(requestUser.getEmail()) && !userService.passwordsMatch(request.getConfirmationPassword(),requestUser.getPassword())){
+            return new MessageResponse("The confirmation password is incorrect");
+        }
+
+        Optional<User> optionalOperationalUser = userRepository.findByEmail(request.getUserEmail());
+        if(optionalOperationalUser.isEmpty()){
+            return new MessageResponse("There is no user with that email");
+        }
+
+        User operationalUser = optionalOperationalUser.get();
+        if(!requestUser.getRoles().contains(Role.ROLE_ADMIN) && !operationalUser.getCompany().getId().equals(requestUser.getCompany().getId())){
+            return new MessageResponse("You can't delete user from company you are not part of");
+        }
+
+        operationalUser.setManagedStorehouses(new ArrayList<>());
+        operationalUser.setCompany(null);
+        userRepository.save(operationalUser);
+
+        return new MessageResponse("User was deleted from storehouse");
+    }
+    public List<Storehouse> getMyStorehouses(){
+        return userService.getUserFromContext().getManagedStorehouses();
     }
 
 }

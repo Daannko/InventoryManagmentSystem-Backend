@@ -59,7 +59,7 @@ public class ProductService {
         if(optionalQuantity.isEmpty()){
             quantity = Quantity.builder()
                     .storehouseId(request.getStorehouseId())
-                    .blocked(false)
+                    .blocked(request.getBlocked())
                     .productId(request.getProductId())
                     .quantity(request.getQuantity())
                     .build();

@@ -1,8 +1,8 @@
 package com.example.InventoryManagmentSystem.controlers;
 import com.example.InventoryManagmentSystem.dto.AddOwnerToStorehouseRequest;
 import com.example.InventoryManagmentSystem.dto.ProductQuantityRequest;
+import com.example.InventoryManagmentSystem.dto.UserDeleteFromStorehouseRequest;
 import com.example.InventoryManagmentSystem.models.Storehouse;
-import com.example.InventoryManagmentSystem.repositories.ProductRepository;
 import com.example.InventoryManagmentSystem.services.ProductService;
 import com.example.InventoryManagmentSystem.services.StorehouseService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +40,11 @@ public class StorehouseController {
     @GetMapping("/inv/{id}")
     public ResponseEntity <?> getInventory(@PathVariable Long id){
         return ResponseEntity.ok(storehouseService.getStorehouseInventory(id));
+    }
+
+    @PostMapping
+    ResponseEntity<?> deleteUserFromStorehouse(@RequestBody UserDeleteFromStorehouseRequest request){
+        return ResponseEntity.ok(storehouseService.deleteUserFromStorehouse(request));
     }
 
 }
