@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("storehouse")
+@CrossOrigin(origins = "*")
 public class StorehouseController {
 
     private final StorehouseService storehouseService;
