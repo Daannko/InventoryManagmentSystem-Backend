@@ -58,5 +58,9 @@ public class User {
         );
     }
 
+    public boolean isAdmin(){
+        return this.roles.contains(Role.ROLE_ADMIN);
+    }
+
 
 }
