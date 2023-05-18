@@ -3,6 +3,7 @@ package com.example.InventoryManagmentSystem.models;
 import com.example.InventoryManagmentSystem.dto.CompanyResponse;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class Company {
     private List<User> employees;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     @JoinTable(
             name = "storehouses_companies",
             joinColumns = @JoinColumn(name = "company_id"),
@@ -50,7 +51,9 @@ public class Company {
                 this.id,
                 this.name,
                 this.employees.stream().map(User::dto).collect(Collectors.toList()),
-                "All companies"
+                this.getAdmins(),
+                this.storehouses,
+                ""
         );
     }
 }

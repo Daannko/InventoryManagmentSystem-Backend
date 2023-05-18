@@ -1,9 +1,6 @@
 package com.example.InventoryManagmentSystem.controlers;
 
-import com.example.InventoryManagmentSystem.dto.AddCompanyRequest;
-import com.example.InventoryManagmentSystem.dto.AddUserToCompanyRequest;
-import com.example.InventoryManagmentSystem.dto.CompanyResponse;
-import com.example.InventoryManagmentSystem.dto.UserDeleteFromCompanyRequest;
+import com.example.InventoryManagmentSystem.dto.*;
 import com.example.InventoryManagmentSystem.models.Company;
 import com.example.InventoryManagmentSystem.repositories.CompanyRepository;
 import com.example.InventoryManagmentSystem.services.CompanyService;
@@ -39,6 +36,12 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.addUserToCompany(request));
     }
 
+    @PostMapping("/promote")
+    public ResponseEntity<?> promoteEmployee(@RequestBody CompanyAdminsChangeRequest request){
+        return ResponseEntity.ok(companyService.promoteToAdmin(request));
+    }
+
+
     @GetMapping("/all")
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(companyService.getAll());
@@ -49,7 +52,7 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.getById(id));
     }
 
-    @PostMapping
+    @PostMapping("/employee/remove")
     ResponseEntity<?> deleteUserFromCompany(@RequestBody UserDeleteFromCompanyRequest request){
         return ResponseEntity.ok(companyService.deleteFromCompany(request));
     }

@@ -1,6 +1,7 @@
 package com.example.InventoryManagmentSystem.controlers;
 import com.example.InventoryManagmentSystem.dto.AddOwnerToStorehouseRequest;
 import com.example.InventoryManagmentSystem.dto.ProductQuantityRequest;
+import com.example.InventoryManagmentSystem.dto.StorehouseCompanyAddRequest;
 import com.example.InventoryManagmentSystem.dto.UserDeleteFromStorehouseRequest;
 import com.example.InventoryManagmentSystem.models.Storehouse;
 import com.example.InventoryManagmentSystem.services.ProductService;
@@ -25,13 +26,19 @@ public class StorehouseController {
         return storehouseService.getAllStorehouses();
     }
 
+
     @PostMapping("/add")
     public Storehouse add(@RequestBody Storehouse request){
         return storehouseService.addStorehouse(request);
     }
+
     @PostMapping("/user")
-    public ResponseEntity <?> add(@RequestBody AddOwnerToStorehouseRequest request){
+    public ResponseEntity <?> addUser(@RequestBody AddOwnerToStorehouseRequest request){
         return ResponseEntity.ok(storehouseService.addOwnerToStorehouse(request));
+    }
+    @PostMapping("/company")
+    public ResponseEntity<?> addCompany(@RequestBody StorehouseCompanyAddRequest request){
+        return ResponseEntity.ok(storehouseService.addCompanyToStorehouse(request));
     }
     @PostMapping("/product/add")
     public ResponseEntity <?> addProduct(@RequestBody ProductQuantityRequest request){
@@ -43,7 +50,7 @@ public class StorehouseController {
         return ResponseEntity.ok(storehouseService.getStorehouseInventory(id));
     }
 
-    @PostMapping
+    @PostMapping("/user/remove")
     ResponseEntity<?> deleteUserFromStorehouse(@RequestBody UserDeleteFromStorehouseRequest request){
         return ResponseEntity.ok(storehouseService.deleteUserFromStorehouse(request));
     }

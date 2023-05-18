@@ -46,6 +46,8 @@ public class CompanyService {
             return new MessageResponse("User is already an employee of a company");
         }
 
+
+        company.getAdmins().add(user.getEmail());
         company.getEmployees().add(user);
         user.setCompany(company);
         userRepository.save(user);
@@ -59,6 +61,12 @@ public class CompanyService {
         if(optionalUser.isEmpty()){
             throw new UsernameNotFoundException("User not found");
         }
+
+        User requestUser = userService.getUserFromContext();
+        if(!requestUser.getRoles().contains(Role.ROLE_ADMIN) && !requestUser.getId().equals(request.getOwner())){
+            return new CompanyResponse("You cant start company for someone else!");
+        }
+
         if(optionalUser.get().getCompany() != null){
             return new CompanyResponse("User already in company");
         }
@@ -67,8 +75,8 @@ public class CompanyService {
 
         Company company = new Company(request.getName(), Collections.singletonList(optionalUser.get()),user.getEmail());
         user.setCompany(company);
+
         companyRepository.save(company);
-        userRepository.save(user);
 
         CompanyResponse companyResponse = new CompanyResponse();
         companyResponse.setId(user.getCompany().getId());
@@ -79,8 +87,11 @@ public class CompanyService {
         return companyResponse;
     }
 
-    public Company getById(Long id){
-        return companyRepository.getById(id);
+    public CompanyResponse getById(Long id){
+
+        Optional<Company> optionalCompany = companyRepository.findById(id);
+        return optionalCompany.map(Company::dto).orElse(null);
+
     }
 
     public List<CompanyResponse> getAll(){
@@ -94,6 +105,12 @@ public class CompanyService {
 
         if(!company.getAdmins().contains(requestUser.getEmail())){
             return new MessageResponse("You don't have role to do that");
+        }
+        if(!requestUser.getCompany().getId().equals(operationalUser.getCompany().getId())){
+            return new MessageResponse("User is in another company");
+        }
+        if(company.getAdmins().contains(operationalUser.getEmail())){
+            return new MessageResponse("User is admin already");
         }
 
         company.getAdmins().add(operationalUser.getEmail());
@@ -122,8 +139,12 @@ public class CompanyService {
 
         Company company = operationalUser.getCompany();
 
-        if(!requestUser.getRoles().contains(Role.ROLE_ADMIN) && !company.getId().equals(requestUser.getCompany().getId())){
+        if(!requestUser.getRoles().contains(Role.ROLE_ADMIN) || !company.getId().equals(requestUser.getCompany().getId())){
             return new MessageResponse("You can't delete user from company you are not part of");
+        }
+
+        if(!requestUser.getRoles().contains(Role.ROLE_ADMIN) || !requestUser.getCompany().getAdmins().contains(requestUser.getEmail())){
+            return new MessageResponse("You dont have permission to do that");
         }
 
         operationalUser.setManagedStorehouses(new ArrayList<>());
