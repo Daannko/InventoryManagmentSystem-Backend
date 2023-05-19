@@ -46,8 +46,6 @@ public class CompanyService {
             return new MessageResponse("User is already an employee of a company");
         }
 
-
-        company.getAdmins().add(user.getEmail());
         company.getEmployees().add(user);
         user.setCompany(company);
         userRepository.save(user);
