@@ -30,7 +30,6 @@ public class Storehouse {
 
     @ManyToMany(mappedBy = "storehouses",cascade = CascadeType.ALL)
     @JsonIgnore
-    @JsonBackReference
     List<Company> companies;
 
     private boolean isBig;

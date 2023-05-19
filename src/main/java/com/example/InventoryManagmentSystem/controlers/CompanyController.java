@@ -22,7 +22,9 @@ public class CompanyController {
     public ResponseEntity<CompanyResponse> addCompany(@RequestBody AddCompanyRequest request){
         CompanyResponse companyResponse;
         try{
+            System.out.println("executed");
             companyResponse = companyService.add(request);
+
         }
         catch (UsernameNotFoundException e){
             return ResponseEntity.ok(new CompanyResponse("User not found"));
