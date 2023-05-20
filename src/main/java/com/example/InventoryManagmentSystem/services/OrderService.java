@@ -32,6 +32,12 @@ public class OrderService {
         Optional<Storehouse> toStorehouseOptional = storehouseRepository.findById(orderRequest.getToStorehouseId());
         User user =  userService.getUserFromContext();
 
+        for(Item item : orderRequest.getItems()){
+            if(productRepository.findById(item.getId()).isEmpty()){
+                return OrderResponse.builder().message("There is no item with ID: " + item.getProductId()).build();
+            }
+        }
+
         if(orderRequest.getToStorehouseId().equals(orderRequest.getFormStorehouseId())){
             return OrderResponse.builder().message("Can't order from and to the same storehouse").build();
         }
