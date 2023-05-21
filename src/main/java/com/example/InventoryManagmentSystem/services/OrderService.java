@@ -62,10 +62,14 @@ public class OrderService {
                 .userId(user.getId())
                 .build();
 
-        for (Item i: orderRequest.getItems())
-            i.setOrder(order);
-        order.setItems(orderRequest.getItems());
+        List<Item> allItems = new ArrayList<>();
 
+        for (Item i: orderRequest.getItems()){
+            Item item = itemRepository.findById(i.getId()).get();
+            item.setOrder(order);
+            allItems.add(item);
+        }
+        order.setItems(allItems);
         orderRepository.save(order);
         itemRepository.saveAll(orderRequest.getItems());
         return mapToOrderResponse(order);
