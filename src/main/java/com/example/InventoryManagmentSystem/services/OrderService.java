@@ -71,8 +71,8 @@ public class OrderService {
                 allItems.add(i);
         }
         order.setItems(allItems);
-        orderRepository.save(order);
         itemRepository.saveAll(allItems);
+        orderRepository.save(order);
         return mapToOrderResponse(order);
     }
 
