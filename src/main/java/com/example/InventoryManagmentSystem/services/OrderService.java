@@ -65,7 +65,9 @@ public class OrderService {
         List<Item> allItems = new ArrayList<>();
 
         for (Item i: orderRequest.getItems()){
-            Item item = itemRepository.findById(i.getId()).get();
+            Optional<Item> itemOptional = itemRepository.findById(i.getId());
+            if(itemOptional.isEmpty()) continue;
+            Item item = itemOptional.get();
             item.setOrder(order);
             allItems.add(item);
         }
