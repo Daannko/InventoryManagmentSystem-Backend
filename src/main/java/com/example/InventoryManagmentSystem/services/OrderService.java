@@ -66,22 +66,12 @@ public class OrderService {
         order = orderRepository.getById(order.getId());
 
         List<Item> allItems = new ArrayList<>();
-
         for (Item i: orderRequest.getItems()){
-            Optional<Item> itemOptional = itemRepository.findById(i.getId());
-            if(itemOptional.isPresent()){
-                Item item = itemOptional.get();
+                Item item = new Item();
                 item.setOrder(order);
                 allItems.add(item);
-            }
-            else {
-                System.out.println("Lol");
-            }
         }
         order.setItems(allItems);
-
-        System.out.println(order.getItems());
-
         orderRepository.save(order);
         itemRepository.saveAll(allItems);
         return mapToOrderResponse(order);
