@@ -67,9 +67,8 @@ public class OrderService {
 
         List<Item> allItems = new ArrayList<>();
         for (Item i: orderRequest.getItems()){
-                Item item = new Item();
-                item.setOrder(order);
-                allItems.add(item);
+                i.setOrder(order);
+                allItems.add(i);
         }
         order.setItems(allItems);
         orderRepository.save(order);
