@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Table(name = "items")
 public class Item {
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "productId", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @ManyToOne
