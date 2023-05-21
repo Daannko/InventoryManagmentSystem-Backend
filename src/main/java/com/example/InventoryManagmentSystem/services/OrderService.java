@@ -69,12 +69,19 @@ public class OrderService {
 
         for (Item i: orderRequest.getItems()){
             Optional<Item> itemOptional = itemRepository.findById(i.getId());
-            if(itemOptional.isEmpty()) continue;
-            Item item = itemOptional.get();
-            item.setOrder(order);
-            allItems.add(item);
+            if(itemOptional.isPresent()){
+                Item item = itemOptional.get();
+                item.setOrder(order);
+                allItems.add(item);
+            }
+            else {
+                System.out.println("Lol");
+            }
         }
         order.setItems(allItems);
+
+        System.out.println(order.getItems());
+
         orderRepository.save(order);
         itemRepository.saveAll(allItems);
         return mapToOrderResponse(order);
@@ -221,7 +228,8 @@ public class OrderService {
 
     private OrderResponse mapToOrderResponse(Order order){
         OrderResponse orderResponse = order.responseDTO();
-        orderResponse.setItems(order.getItems().stream().map(e -> new ItemResponse(productRepository.getById(e.getProductId()).dto(),e.getQuantity())).collect(Collectors.toList()));
+        if(!order.getItems().isEmpty())
+            orderResponse.setItems(order.getItems().stream().map(e -> new ItemResponse(productRepository.getById(e.getProductId()).dto(),e.getQuantity())).collect(Collectors.toList()));
         return orderResponse;
     }
 
