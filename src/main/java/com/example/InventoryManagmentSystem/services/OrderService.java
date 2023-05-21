@@ -33,7 +33,7 @@ public class OrderService {
         User user =  userService.getUserFromContext();
 
         for(Item item : orderRequest.getItems()){
-            if(productRepository.findById(item.getId()).isEmpty()){
+            if(productRepository.findById(item.getProductId()).isEmpty()){
                 return OrderResponse.builder().message("There is no item with ID: " + item.getProductId()).build();
             }
         }
