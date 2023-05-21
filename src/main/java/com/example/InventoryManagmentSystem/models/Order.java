@@ -23,7 +23,7 @@ public class Order {
     private Long userId;
     private Long fromStorehouseId;
     private Long toStorehouseId;
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order")
     @JsonManagedReference
     private List<Item> items;
     @Enumerated(EnumType.STRING)

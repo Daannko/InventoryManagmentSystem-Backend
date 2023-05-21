@@ -13,6 +13,7 @@ import javax.persistence.*;
 public class Item {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
