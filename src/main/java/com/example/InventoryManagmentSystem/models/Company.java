@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Data
 public class Company {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "company_id", nullable = false)
     private Long id;
     private String name;
