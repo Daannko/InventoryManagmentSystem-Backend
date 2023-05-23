@@ -5,6 +5,7 @@ import com.example.InventoryManagmentSystem.dto.UserDeleteFromStorehouseRequest;
 import com.example.InventoryManagmentSystem.dto.UserUpdateRequest;
 import com.example.InventoryManagmentSystem.models.Storehouse;
 import com.example.InventoryManagmentSystem.models.User;
+import com.example.InventoryManagmentSystem.services.ProductService;
 import com.example.InventoryManagmentSystem.services.StorehouseService;
 import com.example.InventoryManagmentSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,11 @@ public class UserController {
     @PatchMapping("/update")
     ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest request){
         return ResponseEntity.ok(userService.updateUser(request));
+    }
+
+    @GetMapping("/stockalert")
+    ResponseEntity<?> getLowStockAlerts(@RequestParam(defaultValue = "500") String amount){
+        return ResponseEntity.ok(storehouseService.getAlerts(Integer.parseInt(amount)));
     }
 
 }

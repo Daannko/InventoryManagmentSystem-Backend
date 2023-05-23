@@ -19,6 +19,7 @@ public class StorehouseService {
     private final ProductRepository productRepository;
     private final CompanyRepository companyRepository;
     private final UserService userService;
+    private final ProductService productService;
 
     public List<Storehouse> getAllStorehouses(){
         return storehouseRepository.findAll();
@@ -104,7 +105,6 @@ public class StorehouseService {
         return new MessageResponse("Success");
     }
     public List<ProductResponse> getStorehouseInventory(Long id){
-
         Optional<Storehouse> optionalStorehouse = storehouseRepository.findById(id);
         if(optionalStorehouse.isEmpty()){
             return Collections.singletonList(ProductResponse.builder().message("No storage found").build());
@@ -115,7 +115,7 @@ public class StorehouseService {
         List<ProductResponse> list = new ArrayList<>();
         for(Quantity q : quantityRepository.findAllByStorehouseId(id).get()){
             ProductResponse productResponse = new ProductResponse();
-            productResponse.setProduct(productRepository.getById(q.getProductId()).dto());
+            productResponse.setProduct(productService.changeProductToCategory(productRepository.getById(q.getProductId())));
             productResponse.setQuantity(q.getQuantity());
             productResponse.setMessage("");
             list.add(productResponse);
@@ -153,6 +153,20 @@ public class StorehouseService {
     }
     public List<Storehouse> getMyStorehouses(){
         return userService.getUserFromContext().getManagedStorehouses();
+    }
+
+    public List<ProductLowStockAlertResponse> getAlerts(int amount) {
+        List<ProductLowStockAlertResponse> products = new ArrayList<>();
+        User user = userService.getUserFromContext();
+
+        for(Storehouse storehouse : user.getManagedStorehouses()){
+            for(ProductResponse product : getStorehouseInventory(storehouse.getId())){
+                if(product.getQuantity() < amount){
+                    products.add(new ProductLowStockAlertResponse(product.getProduct(),storehouse.getName(),product.getQuantity()));
+                }
+            }
+        }
+        return products;
     }
 
 }

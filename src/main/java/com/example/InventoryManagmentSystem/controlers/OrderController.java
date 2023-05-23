@@ -4,6 +4,7 @@ import com.example.InventoryManagmentSystem.dto.*;
 import com.example.InventoryManagmentSystem.models.Order;
 import com.example.InventoryManagmentSystem.services.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,21 @@ public class OrderController {
     @GetMapping("/user")
     public OrderForUserResponse getForUser(@RequestBody OrderForUserRequest request){
         return orderService.getForUser(request);
+    }
+
+    @GetMapping("/raport/user")
+    ResponseEntity<?> getLowStockAlerts(@RequestParam(defaultValue = "-1") String id){
+        return ResponseEntity.ok(orderService.getOrdersByUser(Long.parseLong(id)));
+    }
+
+    @GetMapping("/raport/storehouse/{id}")
+    ResponseEntity<?> getLowStockAlerts(@PathVariable Long id){
+        return ResponseEntity.ok(orderService.getOrdersByStorehouse(id));
+    }
+
+    @GetMapping("/raport/company")
+    ResponseEntity<?> getLowStockAlerts(){
+        return ResponseEntity.ok(orderService.getOrdersByCompany());
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class OrderResponse {
     private Long orderId;
-    private Long userId;
+    private String userName;
     private Long formStorehouseId;
     private Long toStorehouseId;
     private List<ItemResponse> items;

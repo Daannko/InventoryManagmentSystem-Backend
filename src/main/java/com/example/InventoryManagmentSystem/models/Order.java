@@ -37,7 +37,6 @@ public class Order {
     public OrderResponse responseDTO() {
         return OrderResponse.builder()
                 .orderId(id)
-                .userId(this.userId)
                 .formStorehouseId(this.fromStorehouseId)
                 .toStorehouseId(this.toStorehouseId)
                 .status(this.orderStatus)

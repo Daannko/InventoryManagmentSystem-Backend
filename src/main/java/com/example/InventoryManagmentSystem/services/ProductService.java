@@ -1,15 +1,18 @@
 package com.example.InventoryManagmentSystem.services;
 
+import com.example.InventoryManagmentSystem.dto.ProductDto;
+import com.example.InventoryManagmentSystem.dto.ProductLowStockAlertResponse;
 import com.example.InventoryManagmentSystem.dto.ProductQuantityRequest;
 import com.example.InventoryManagmentSystem.dto.ProductResponse;
-import com.example.InventoryManagmentSystem.models.Item;
-import com.example.InventoryManagmentSystem.models.Product;
-import com.example.InventoryManagmentSystem.models.Quantity;
+import com.example.InventoryManagmentSystem.models.*;
+import com.example.InventoryManagmentSystem.repositories.CategoryRepository;
 import com.example.InventoryManagmentSystem.repositories.ProductRepository;
 import com.example.InventoryManagmentSystem.repositories.QuantityRepository;
 import com.example.InventoryManagmentSystem.repositories.StorehouseRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +24,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final QuantityRepository quantityRepository;
     private final StorehouseRepository storehouseRepository;
-
+    private final CategoryRepository categoryRepository;
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
@@ -31,7 +34,6 @@ public class ProductService {
     }
 
     public Boolean checkProductsQuantity(Long storehouseId,List<Item> items){
-
         Optional<List<Quantity>> optionalQuantities = quantityRepository.findAllByStorehouseId(storehouseId);
         if(optionalQuantities.isEmpty()){
             return false;
@@ -77,9 +79,16 @@ public class ProductService {
 
         return ProductResponse.builder()
                 .message("Operation succeeded")
-                .product(productRepository.getById(quantity.getProductId()).dto())
+                .product(changeProductToCategory(productRepository.getById(quantity.getProductId())))
                 .quantity(quantity.getQuantity())
                 .build();
+    }
+
+    public ProductDto changeProductToCategory(Product product){
+        String category = "";
+        Optional<Category> optionalCategory = categoryRepository.findById(product.getCategoryId());
+        if(optionalCategory.isPresent()) category = optionalCategory.get().getName();
+        return product.dto(category);
     }
 
 }

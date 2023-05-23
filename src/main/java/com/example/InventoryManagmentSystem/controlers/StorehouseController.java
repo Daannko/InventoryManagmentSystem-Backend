@@ -26,7 +26,6 @@ public class StorehouseController {
         return storehouseService.getAllStorehouses();
     }
 
-
     @PostMapping("/add")
     public Storehouse add(@RequestBody Storehouse request){
         return storehouseService.addStorehouse(request);

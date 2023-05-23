@@ -4,12 +4,11 @@ import com.example.InventoryManagmentSystem.dto.*;
 import com.example.InventoryManagmentSystem.models.*;
 import com.example.InventoryManagmentSystem.repositories.*;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,12 +18,11 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final StorehouseRepository storehouseRepository;
-    private final UserRepository userRepository;
     private final ProductService productService;
     private final ProductRepository productRepository;
     private final UserService userService;
-    private final QuantityRepository quantityRepository;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
 
     public OrderResponse add(OrderRequest orderRequest) {
@@ -217,11 +215,62 @@ public class OrderService {
 
     private OrderResponse mapToOrderResponse(Order order){
         OrderResponse orderResponse = order.responseDTO();
+        orderResponse.setUserName(userRepository.getById(order.getUserId()).getName() + " " + userRepository.getById(order.getUserId()).getSurname());
         if(!order.getItems().isEmpty())
-            orderResponse.setItems(order.getItems().stream().map(e -> new ItemResponse(productRepository.getById(e.getProductId()).dto(),e.getQuantity())).collect(Collectors.toList()));
+            orderResponse.setItems(order.getItems().stream().map(e -> new ItemResponse(productService.changeProductToCategory(productRepository.getById(e.getProductId())),e.getQuantity())).collect(Collectors.toList()));
         return orderResponse;
     }
 
+    public List<OrderResponse> getOrdersByUser(Long id){
+        if(id != -1) {
+            User user = userService.getUserFromContext();
+            if(!user.getCompany().getAdmins().contains(user.getEmail())){
+                return Collections.singletonList(OrderResponse.builder().message("You have to be company admin to ask for another users raport").build());
+            }
+            final Long idCopy = id;
+            if(user.getCompany().getEmployees().stream().noneMatch(e -> e.getId().equals(idCopy))){
+                return Collections.singletonList(OrderResponse.builder().message("This user is not from your company").build());
+            }
+        }
+        else {
+            id = userService.getUserFromContext().getId();
+        }
+        return orderRepository.findAllByUserId(id).stream().map(this::mapToOrderResponse).collect(Collectors.toList());
+    }
+
+    public List<OrderResponse> getOrdersByStorehouse(Long id){
+
+        if(storehouseRepository.findById(id).isEmpty()){
+            return Collections.singletonList(OrderResponse.builder().message("No storehouse with that ID").build());
+        }
+
+        final List<Long> idsOfEmployees = userService.getUserFromContext().getCompany().getEmployees()
+                .stream()
+                .map(User::getId)
+                .collect(Collectors.toList());
+        List<Order> orders = orderRepository.getByToStorehouseId(id)
+                .stream()
+                .filter(e -> idsOfEmployees.contains(e.getUserId())).collect(Collectors.toList());
+
+        orders.addAll(orderRepository.getByFromStorehouseId(id)
+                .stream()
+                .filter(e -> idsOfEmployees.contains(e.getUserId())).collect(Collectors.toList()));
+        return orders.stream().map(this::mapToOrderResponse).collect(Collectors.toList());
+    }
+
+    public List<OrderResponse> getOrdersByCompany(){
+
+        User user = userService.getUserFromContext();
+        if(!user.getCompany().getAdmins().contains(user.getEmail())){
+            return Collections.singletonList(OrderResponse.builder().message("You have to be company admin to ask for company's raport").build());
+        }
+
+        List<Order> orders = new ArrayList<>();
+        for(Long id: user.getCompany().getEmployees().stream().map(User :: getId).collect(Collectors.toList())){
+            orders.addAll(orderRepository.findAllByUserId(id));
+        }
+        return orders.stream().map(this::mapToOrderResponse).collect(Collectors.toList());
+    }
 
 }
 
