@@ -6,10 +6,7 @@ import com.example.InventoryManagmentSystem.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +55,8 @@ public class OrderService {
                 .fromStorehouseId(orderRequest.getFormStorehouseId())
                 .toStorehouseId(orderRequest.getToStorehouseId())
                 .userId(user.getId())
+                .createdAt(new Date())
+                .statusChangeAt(new Date())
                 .build();
 
         orderRepository.save(order);
@@ -83,12 +82,7 @@ public class OrderService {
         }
 
         Order order = optionalOrder.get();
-
-
-
-
         User user = userService.getUserFromContext();
-
 
         if (!(user.getManagedStorehouses().stream().map(Storehouse::getId).collect(Collectors.toList()).contains(order.getToStorehouseId())
          || user.getManagedStorehouses().stream().map(Storehouse::getId).collect(Collectors.toList()).contains(order.getFromStorehouseId()))) {
@@ -122,6 +116,7 @@ public class OrderService {
             MessageResponse status = manageItems(order,order.getFromStorehouseId(),1);
             if(status.getMessage().contains("Order status changed successfully")){
                 order.setOrderStatus(orderProcessRequest.getOrderStatus());
+                order.setStatusChangeAt(new Date());
                 orderRepository.save(order);
             }
             return status;
@@ -140,6 +135,7 @@ public class OrderService {
             MessageResponse status = manageItems(order,order.getFromStorehouseId(),-1);
             if(status.getMessage().contains("Order status changed successfully")){
                 order.setOrderStatus(orderProcessRequest.getOrderStatus());
+                order.setStatusChangeAt(new Date());
                 orderRepository.save(order);
             }
             return status;
@@ -152,12 +148,14 @@ public class OrderService {
             MessageResponse status = manageItems(order,order.getToStorehouseId(),1);
             if(status.getMessage().contains("Order status changed successfully")){
                 order.setOrderStatus(orderProcessRequest.getOrderStatus());
+                order.setStatusChangeAt(new Date());
                 orderRepository.save(order);
             }
             return status;
         }
 
         order.setOrderStatus(orderProcessRequest.getOrderStatus());
+        order.setStatusChangeAt(new Date());
         orderRepository.save(order);
         return new MessageResponse("Order status changed successfully:)");
     }

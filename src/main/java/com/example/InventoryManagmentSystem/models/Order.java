@@ -8,6 +8,7 @@ import lombok.Data;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,8 @@ public class Order {
     private Long userId;
     private Long fromStorehouseId;
     private Long toStorehouseId;
+    private Date createdAt;
+    private Date statusChangeAt;
     @OneToMany(mappedBy = "order")
     @JsonManagedReference
     private List<Item> items;
@@ -40,6 +43,8 @@ public class Order {
                 .formStorehouseId(this.fromStorehouseId)
                 .toStorehouseId(this.toStorehouseId)
                 .status(this.orderStatus)
+                .createdAt(createdAt)
+                .statusChangedAt(statusChangeAt)
                 .message(this.message).build();
     }
 }
