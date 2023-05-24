@@ -1,10 +1,9 @@
 package com.example.InventoryManagmentSystem.services;
 
-import com.example.InventoryManagmentSystem.dto.MessageResponse;
-import com.example.InventoryManagmentSystem.dto.UserDeleteFromCompanyRequest;
-import com.example.InventoryManagmentSystem.dto.UserDeleteFromStorehouseRequest;
-import com.example.InventoryManagmentSystem.dto.UserUpdateRequest;
+import com.example.InventoryManagmentSystem.dto.*;
+import com.example.InventoryManagmentSystem.models.Product;
 import com.example.InventoryManagmentSystem.models.Role;
+import com.example.InventoryManagmentSystem.models.Storehouse;
 import com.example.InventoryManagmentSystem.models.User;
 import com.example.InventoryManagmentSystem.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -105,5 +105,6 @@ public class UserService {
     public boolean passwordsMatch(String confirmationPassword,String usersPassword){
         return passwordEncoder.matches(confirmationPassword,usersPassword);
     }
+
 
 }

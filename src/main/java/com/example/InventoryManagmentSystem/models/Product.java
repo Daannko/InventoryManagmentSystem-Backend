@@ -25,13 +25,13 @@ public class Product {
     private Long categoryId;
     private boolean isAvailable;
     private String manufacturer;
-    public ProductDto dto(){
+    public ProductDto dto(String category){
         return new ProductDto(
                 this.id,
                 this.name,
                 this.description,
                 this.price,
-                this.categoryId,
+                category,
                 this.manufacturer);
     }
 
