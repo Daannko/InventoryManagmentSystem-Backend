@@ -37,7 +37,7 @@ public class OrderController {
         return orderService.process(request);
     }
 
-    @GetMapping("/user")
+    @PostMapping("/user")
     public OrderForUserResponse getForUser(@RequestBody OrderForUserRequest request){
         return orderService.getForUser(request);
     }
