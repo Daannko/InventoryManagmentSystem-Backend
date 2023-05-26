@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 import javax.persistence.*;
 
@@ -24,6 +23,7 @@ public class Product {
     private double price;
     private Long categoryId;
     private boolean isAvailable;
+    private String url;
     private String manufacturer;
     public ProductDto dto(String category){
         return new ProductDto(
@@ -31,8 +31,12 @@ public class Product {
                 this.name,
                 this.description,
                 this.price,
+                this.categoryId,
                 category,
-                this.manufacturer);
+                this.manufacturer,
+        this.isAvailable);
+
     }
+
 
 }

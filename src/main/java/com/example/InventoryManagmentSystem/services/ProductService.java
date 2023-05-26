@@ -1,9 +1,6 @@
 package com.example.InventoryManagmentSystem.services;
 
-import com.example.InventoryManagmentSystem.dto.ProductDto;
-import com.example.InventoryManagmentSystem.dto.ProductLowStockAlertResponse;
-import com.example.InventoryManagmentSystem.dto.ProductQuantityRequest;
-import com.example.InventoryManagmentSystem.dto.ProductResponse;
+import com.example.InventoryManagmentSystem.dto.*;
 import com.example.InventoryManagmentSystem.models.*;
 import com.example.InventoryManagmentSystem.repositories.CategoryRepository;
 import com.example.InventoryManagmentSystem.repositories.ProductRepository;
@@ -25,8 +22,14 @@ public class ProductService {
     private final QuantityRepository quantityRepository;
     private final StorehouseRepository storehouseRepository;
     private final CategoryRepository categoryRepository;
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
+    public List<ProductDto> getAllProducts(){
+        List<ProductDto> products = productRepository.findAll()
+                .stream().map(e -> e.dto("")).collect(Collectors.toList());
+        for(ProductDto product : products){
+            Optional <Category> cat = categoryRepository.findById(product.getCategoryId());
+            cat.ifPresent(category -> product.setCategory(category.getName()));
+        }
+        return products;
     }
 
     public Product addProduct(Product product){

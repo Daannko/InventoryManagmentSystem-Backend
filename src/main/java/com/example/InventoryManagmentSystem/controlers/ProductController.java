@@ -1,8 +1,8 @@
 package com.example.InventoryManagmentSystem.controlers;
 
+import com.example.InventoryManagmentSystem.dto.ProductDto;
 import com.example.InventoryManagmentSystem.models.Product;
 import com.example.InventoryManagmentSystem.services.ProductService;
-import com.example.InventoryManagmentSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,7 @@ public class ProductController{
     private final ProductService productService;
 
     @GetMapping("/all")
-    public List<Product> getAllProducts(){
+    public List<ProductDto> getAllProducts(){
         return productService.getAllProducts();
     }
 

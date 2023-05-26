@@ -1,6 +1,7 @@
 package com.example.InventoryManagmentSystem.models;
 
 import com.example.InventoryManagmentSystem.dto.UserResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -62,5 +64,6 @@ public class User {
         return this.roles.contains(Role.ROLE_ADMIN);
     }
 
+    public boolean isCompanyAdmin(){ return this.company != null && this.company.getAdmins().contains(this.email);}
 
 }
