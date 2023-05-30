@@ -14,4 +14,5 @@ public class ProductDto {
     private String category;
     private String manufacturer;
     private boolean isAvailable;
+    private String url;
 }

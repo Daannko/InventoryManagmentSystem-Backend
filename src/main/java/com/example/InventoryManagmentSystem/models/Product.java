@@ -34,7 +34,8 @@ public class Product {
                 this.categoryId,
                 category,
                 this.manufacturer,
-        this.isAvailable);
+        this.isAvailable,
+                this.url);
 
     }
 
