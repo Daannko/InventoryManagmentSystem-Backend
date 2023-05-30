@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,8 +100,8 @@ public class ProductService {
         List<Storehouse> storehouses = new ArrayList<>();
         if(quantityOptional.isPresent()){
             for(Quantity quantity : quantityOptional.get()){
-                Storehouse storehouse = storehouseRepository.getById(quantity.getStorehouseId());
-                if(storehouse.isBig()){
+                Storehouse storehouse = storehouseRepository.findById(quantity.getStorehouseId()).orElse(null);
+                if(storehouse != null && storehouse.isBig()){
                     storehouses.add(storehouse);
                 }
             }
@@ -109,7 +110,7 @@ public class ProductService {
     }
 
     public ProductDto getProductById(Long id){
-        return changeProductToCategory(productRepository.getById(id));
+        return changeProductToCategory(Objects.requireNonNull(productRepository.findById(id).orElse(null)));
     }
 
 }
