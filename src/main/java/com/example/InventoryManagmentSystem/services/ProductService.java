@@ -94,4 +94,19 @@ public class ProductService {
         return product.dto(category);
     }
 
+    public List<Storehouse> getStorehousesWithProduct(Long id){
+        Optional<List<Quantity>> quantityOptional =  quantityRepository.findAllByProductId(id);
+        List<Storehouse> storehouses = new ArrayList<>();
+        if(quantityOptional.isPresent()){
+            for(Quantity quantity : quantityOptional.get()){
+                storehouses.add(storehouseRepository.getById(quantity.getStorehouseId()));
+            }
+        }
+        return storehouses;
+    }
+
+    public ProductDto getProductById(Long id){
+        return changeProductToCategory(productRepository.getById(id));
+    }
+
 }
