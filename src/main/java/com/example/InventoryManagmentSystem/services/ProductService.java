@@ -113,4 +113,7 @@ public class ProductService {
         return changeProductToCategory(Objects.requireNonNull(productRepository.findById(id).orElse(null)));
     }
 
+    public List<ProductDto> findByName(String name) {
+        return productRepository.findAllByNameContainsIgnoreCase(name).stream().map(this::changeProductToCategory).collect(Collectors.toList());
+    }
 }
